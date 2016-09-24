@@ -4,7 +4,7 @@ Various metaprogramming utilities for the Elixir language, mainly
 targeted at reducing boilerplate in writing Elixir/OTP applications.
 
 Largely inspired by: https://github.com/sasa1977/exactor
-by striving fore cleaner and more transparent implementation.
+by striving for a cleaner and more transparent implementation.
 
 ## Installation
 
