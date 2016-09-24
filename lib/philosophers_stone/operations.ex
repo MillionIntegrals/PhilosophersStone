@@ -25,10 +25,12 @@ defmodule PhilosophersStone.Operations do
 
   # Private function that actually defines init
   defp do_definit(arg, body) do
-    quote bind_quoted: [arg: Macro.escape(arg, unquote: true), body: Macro.escape(body, unquote: true)] do
+    quote do
+    # quote bind_quoted: [arg: Macro.escape(arg, unquote: true), body: Macro.escape(body, unquote: true)] do
       def init(unquote_splicing([arg])), do: unquote(body)
     end
   end
+
 
   # Returns the AST of the starter function
   defp define_starter(name, interface_matches, payload, options) do

@@ -5,51 +5,22 @@ defmodule GenServerTest do
     use PhilosophersStone.GenServer
 
     defstart start_link(x) do
-      initial_state(x)
+      initial_state(x+1)
     end
 
     ### Should become
-    # def start_link([x], options \\ []) do
-    #   GenServer.start_link(__MODULE__, [x], options)
+    # def start_link(x, options \\ []) do
+    #   GenServer.start_link(__MODULE__, {x}, options)
     # end
 
-    # def init([x]) do
-    #   {:ok, x}
+    # def init({x}) do
+    #   {:ok, x + 1}
     # end
   end
 
 
   test "starting server" do
-    import PhilosophersStone.Operations
-
-    quoted = quote do
-      defstart start_link(x) do
-        initial_state(x)
-      end
-    end
-
-    q2 = quote do
-      definit({x}) do
-        initial_state(x)
-      end
-    end
-
-    quoted
-    |> Macro.expand(__ENV__)
-    |> Macro.expand(__ENV__)
-    |> Macro.expand(__ENV__)
-    |> Macro.to_string
-    |> IO.puts
-
-    q2
-    |> Macro.expand(__ENV__)
-    |> Macro.expand(__ENV__)
-    |> Macro.expand(__ENV__)
-    |> Macro.to_string
-    |> IO.puts
-
     {:ok, pid} = TestServer.start_link 1
-
     assert Process.alive?(pid)
   end
 end

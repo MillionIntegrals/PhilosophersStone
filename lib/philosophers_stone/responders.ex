@@ -19,4 +19,4 @@ defmodule PhilosophersStone.Responders do
       {:ok, unquote(state), unquote(timeout)}
     end
   end
-end
+end 
