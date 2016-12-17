@@ -8,7 +8,7 @@ defmodule PhilosophersStone.MacroHelpers do
 
   def block_helper(list) when is_list(list) do
     list
-    |> Enum.filter(fn x -> x != nil end)
+    |> Enum.filter(&(&1 != nil))
     |> block_helper_inner
   end
 
@@ -22,5 +22,9 @@ defmodule PhilosophersStone.MacroHelpers do
 
   defp block_helper_inner(list) when is_list(list) do
     {:__block__, [], list}
+  end
+
+  def state_var do
+    Macro.var(:state_var, PhilosophersStone)
   end
 end
