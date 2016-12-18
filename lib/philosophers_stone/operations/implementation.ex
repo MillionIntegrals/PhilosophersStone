@@ -1,4 +1,6 @@
 defmodule PhilosophersStone.Operations.Implementation do
+  @moduledoc false
+
   alias PhilosophersStone.MacroHelpers
   alias PhilosophersStone.Arguments
 
