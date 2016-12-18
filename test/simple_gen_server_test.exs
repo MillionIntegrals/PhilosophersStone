@@ -55,15 +55,10 @@ defmodule GenServerTest do
     defcast set(value) do
       noreply_and_set(value)
     end
-
-    def inspect_head_functions() do
-      IO.inspect @ps_function_heads
-    end
   end
 
 
   test "starting server" do
-
     {:ok, pid} = TestServer1.start_link 6
 
     assert TestServer1.get(pid) == 6
@@ -89,8 +84,6 @@ defmodule GenServerTest do
     assert TestServer1.get(pid) == 1
 
     assert Process.alive?(pid)
-
-    TestServer1.inspect_head_functions
   end
 
   test "constructor default arguments" do
