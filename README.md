@@ -1,10 +1,12 @@
 # PhilosophersStone
 
-Various metaprogramming utilities for the Elixir language, mainly 
-targeted at reducing boilerplate in writing Elixir/OTP applications.
+I have started this project while learning elixir macros trying to replicate functionality I found in project
+[sasa1977/exactor](https://github.com/sasa1977/exactor).
+The source code wasn't very clear to me, so I went on and tried to reimplement myself the functinality,
+while trying to maintain code simpliciy and clarity.
 
-Largely inspired by: https://github.com/sasa1977/exactor
-by striving for a cleaner and more transparent implementation.
+This project tries to reduce boilerplate when writing Elixir `GenServer`s by making use of language metaprogramming
+capabilities.
 
 ## Installation
 
@@ -26,3 +28,84 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     end
     ```
 
+## Functionality
+
+This project helps remove boilerplate common when implementing `GenServer` behaviour in Elixir. In particular, it can be useful in following situations:
+
+* `start` function just packs all arguments into a tuple which it forwards to `init/1` via `GenServer.start`
+* Calls and casts interface functions just forward all arguments to the server process via `GenServer.call` and `GenServer.cast`.
+
+For other cases, you may need to use plain `GenServer` functions (which can be used together with `PhilosophersStone` macros).
+`PhilosophersStone` is not meant to fully replace `GenServer`. It just tries to reduce boilerplate in most common cases.
+
+## Usage Examples
+
+Let's take a look at the following server definition:
+
+```elixir
+defmodule CounterAgent do
+  use PhilosophersStone.GenServer
+
+  defstart start_link(val \\ 0) do
+    initial_state(val)
+  end
+
+  defcall get(), state: state do
+    reply(state)
+  end
+
+  defcall inc(), state: state do
+    reply_and_set(state, state+1)
+  end
+
+  defcall add(x), state: state do
+    reply_and_set(state + x, state + x)
+  end
+
+  defcast set(value) do
+    noreply_and_set(value)
+  end
+end
+```
+
+Above code defines a simple `GenServer` that maintains a counter, and exposes a convenient
+interface to be used by other processes. Without using a library, this code would look like
+that:
+
+```elixir
+defmodule CounterAgent do
+  use GenServer
+  
+  def start_link(val \\ 0, opts \\ []) do
+    GenServer.start_link(CounterAgent, {val}, opts)
+  end
+  
+  def init({val}) do
+    {:ok, val}
+  end
+  
+  def get(pid) do
+    GenServer.call(pid, {:get})
+  end
+  
+  def handle_call({:get}, _from, state) do
+    {:reply, state, state}
+  end
+  
+  def inc(pid) do
+    GenServer.call(pid, {:inc})
+  end
+  
+  def handle_call({:inc}, _from, state) do
+    {:reply, state, state+1}
+  end
+  
+  def set(pid, value \\ 0) do
+    GenServer.cast(pid, {:set, value})
+  end
+  
+  def handle_cast({:set, value}, _from, _state) do
+    {:noreply, value}
+  end
+end
+```
