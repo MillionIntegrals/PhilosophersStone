@@ -5,6 +5,8 @@ defmodule PhilosophersStone.GenServer do
 
       import PhilosophersStone.Operations
       import PhilosophersStone.Responders
+
+      Module.register_attribute __MODULE__, :ps_function_heads, accumulate: true
     end
   end
 end

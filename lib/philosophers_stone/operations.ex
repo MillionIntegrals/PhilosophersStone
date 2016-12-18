@@ -1,29 +1,19 @@
 defmodule PhilosophersStone.Operations do
-  alias PhilosophersStone.MacroHelpers
-  alias PhilosophersStone.Arguments
-
   import PhilosophersStone.Operations.Implementation
 
   @doc """
   Define server starting function(`start`, `start_link`) together with corresponding `init/1`.
   """
   defmacro defstart(definition, opts \\ []) do
-    {name, args} = Macro.decompose_call(definition)
-    payload = Arguments.pack_values_as_tuple(args)
-
-    starter_ast = define_starter(name, args, payload, opts)
-
-    init_ast = if opts[:do] do
-      do_definit(payload, opts[:do])
-    end
-
-    MacroHelpers.block_helper([starter_ast, init_ast])
+    define_starter(definition, opts)
   end
 
   @doc """
-  Define server `init/1` function with parameters packed as a tuple.
+  Define server `init/1` function clause with parameters packed as a tuple.
   """
-  defmacro definit(arg \\ quote(do: _), opts), do: do_definit(arg, opts[:do])
+  defmacro definit(arg \\ quote(do: _), opts \\ []) do
+    define_init(arg, opts[:do])
+  end
 
   @doc """
   Define server `handle_call/3` function with parameters packed as a tuple.
@@ -38,5 +28,4 @@ defmodule PhilosophersStone.Operations do
   defmacro defcast(definition, options \\ [], body \\ []) do
     define_handler(:defcast, definition, options ++ body)
   end
-
 end

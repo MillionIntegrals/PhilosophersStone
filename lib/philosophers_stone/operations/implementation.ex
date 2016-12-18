@@ -2,15 +2,51 @@ defmodule PhilosophersStone.Operations.Implementation do
   alias PhilosophersStone.MacroHelpers
   alias PhilosophersStone.Arguments
 
+  def define_starter(definition, options \\ []) do
+    {name, args} = Macro.decompose_call(definition)
+    payload = args |> Arguments.clear_default_arguments |> Arguments.pack_values_as_tuple
+
+    function_head_clause = {:defstart, name, length(args)}
+    gen_server_fun = determine_gen_server_starter_fun(name, options)
+
+    init_ast = if options[:do] do
+      define_init(payload, options[:do])
+    end
+
+    quote do
+      if not (unquote(Macro.escape(function_head_clause)) in @ps_function_heads) do
+        def unquote(name)(unquote_splicing(args)) do
+          GenServer.unquote(gen_server_fun)(__MODULE__, unquote(payload))
+        end
+        @ps_function_heads unquote(Macro.escape(function_head_clause))
+      end
+
+      unquote(init_ast)
+    end
+  end
+
+  # Private function that actually defines init
+  def define_init(arg, body) do
+    quote do
+      def init(unquote(arg)), do: unquote(body)
+    end
+  end
+
   def define_handler(type, definition, options \\ []) do
     {name, args} = Macro.decompose_call(definition)
-    payload = Arguments.pack_values_as_tuple([name | args])
+    payload = [name | args] |> Arguments.clear_default_arguments |> Arguments.pack_values_as_tuple
+
     {handler_name, handler_args} = handler_sig(type, options, payload)
     server_fun_name = server_fun_atom(type)
 
+    function_head_clause = {type, name, length(args)}
+
     generic_function_ast = quote do
-      def unquote(name)(pid, unquote_splicing(args)) do
-        GenServer.unquote(server_fun_name)(pid, unquote(payload))
+      if not (unquote(Macro.escape(function_head_clause)) in @ps_function_heads) do
+        def unquote(name)(pid, unquote_splicing(args)) do
+          GenServer.unquote(server_fun_name)(pid, unquote(payload))
+        end
+        @ps_function_heads unquote(Macro.escape(function_head_clause))
       end
     end
 
@@ -47,24 +83,7 @@ defmodule PhilosophersStone.Operations.Implementation do
     {:handle_info, [msg, state_arg]}
   end
 
-  # Private function that actually defines init
-  def do_definit(arg, body) do
-    quote do
-      def init(unquote(arg)), do: unquote(body)
-    end
-  end
 
-
-  # Returns the AST of the starter function
-  def define_starter(name, interface_matches, payload, options) do
-    gen_server_fun = determine_gen_server_starter_fun(name, options)
-
-    quote do
-      def unquote(name)(unquote_splicing(interface_matches)) do
-        GenServer.unquote(gen_server_fun)(__MODULE__, unquote(payload))
-      end
-    end
-  end
 
   # Determine whether GenServer starter fun called should be `start` or `start_link`
   defp determine_gen_server_starter_fun(name, options) do

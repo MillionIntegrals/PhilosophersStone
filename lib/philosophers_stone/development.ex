@@ -1,4 +1,25 @@
 defmodule PhilosophersStone.Development do
+  @moduledoc """
+  Example usage:
+
+  import PhilosophersStone.Development
+  import PhilosophersStone.Operations
+  import PhilosophersStone.Responders
+
+  debug_macro do
+  defcall inc(), state: state do
+  reply_and_set(state, state+1)
+  end
+  end
+
+  debug_macro do
+  defcast set(value) do
+  noreply_and_set(value)
+  end
+  end
+  """
+
+  @doc "Print given code before and after macro expansion"
   defmacro debug_macro(do: code) do
     IO.inspect code
 
