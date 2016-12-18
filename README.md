@@ -1,12 +1,14 @@
 # PhilosophersStone
 
-I have started this project while learning elixir macros trying to replicate functionality I found in project
+I have started this project while learning elixir macros by
+trying to replicate functionality from
 [sasa1977/exactor](https://github.com/sasa1977/exactor).
-The source code wasn't very clear to me, so I went on and tried to reimplement myself the functinality,
-while trying to maintain code simpliciy and clarity.
+The source code wasn't very clear to me, so I went on and tried to reimplement
+myself the same features,
+while at the same time trying to maintain code simpliciy and clarity.
 
-This project tries to reduce boilerplate when writing Elixir `GenServer`s by making use of language metaprogramming
-capabilities.
+This project tries to reduce boilerplate when writing Elixir `GenServer`s by making use of
+language metaprogramming capabilities.
 
 ## Installation
 
