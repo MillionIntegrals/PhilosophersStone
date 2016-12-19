@@ -1,10 +1,18 @@
 defmodule PhilosophersStone.Arguments do
   @moduledoc """
-  Provides macro utilities used to manipulate argument list
+  Processing argument lists in Elixir macros.
   """
 
   @doc """
-  Pack a list of argument values into a tuple.
+  Take a list of function arguments and pack them into a tuple.
+
+  ## Examples
+
+      iex> PhilosophersStone.Arguments.pack_values_as_tuple(quote(do: [1, 2, 3]))
+      quote(do: {1, 2, 3})
+
+      iex> PhilosophersStone.Arguments.pack_values_as_tuple(quote(do: [x, y, z]))
+      quote(do: {x, y, z})
   """
   def pack_values_as_tuple(values) do
     quote do
@@ -12,9 +20,13 @@ defmodule PhilosophersStone.Arguments do
     end
   end
 
-  @doc """
-  Clears default arguments from argument list.
-  (a \\ 1, b \\ 2) becomes (a, b)
+  @doc ~S"""
+  Clears default parameter values from argument list.
+
+  ## Examples
+
+      iex> PhilosophersStone.Arguments.clear_default_arguments(quote(do: [x, y \\ 2, z \\ 3]))
+      quote(do: [x, y, z])
   """
   def clear_default_arguments(argument_list) do
     argument_list |> Enum.map(&clean_default_argument_single/1)

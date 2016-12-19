@@ -1,5 +1,5 @@
 defmodule PhilosophersStone.MacroHelpers do
-  @moduledoc "Utilities for writing macros in this package"
+  @moduledoc false
 
   @doc """
   Block helper - create a block from a list of statements.

@@ -12,7 +12,7 @@ defmodule PhilosophersStone.Mixfile do
       name: "PhilosophersStone",
       source_url: "https://github.com/MillionIntegrals/philosophers_stone",
       docs: [
-        extras: ["README.md"],
+        extras: ["README.md": [title: "README"]],
         main: "PhilosophersStone",
       ]
     ]

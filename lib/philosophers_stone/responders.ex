@@ -1,7 +1,16 @@
 defmodule PhilosophersStone.Responders do
+  @moduledoc """
+  Various macros useful for returning simpler responses from
+  init/call/cast/info handlers.
+  """
+
   @doc """
   Set initial state of the actor.
   Should be used in `definit`/`defstart`.
+
+  ## Examples
+      iex> PhilosophersStone.Responders.initial_state(1)
+      {:ok, 1}
   """
   defmacro initial_state(state) do
     quote do
@@ -12,6 +21,9 @@ defmodule PhilosophersStone.Responders do
   @doc """
   Set initial state of the actor and timeout for initialization.
   Should be used in `definit`/`defstart`.
+  Allows for setting a timeout.
+
+  ## Example
   """
   defmacro initial_state(state, timeout) do
     quote do

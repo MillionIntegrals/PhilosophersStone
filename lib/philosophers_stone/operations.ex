@@ -1,4 +1,9 @@
 defmodule PhilosophersStone.Operations do
+  @moduledoc """
+  Basic building blocks for your `GenServer`s.
+  Use these macros to define your desired functionality.
+  """
+
   import PhilosophersStone.Operations.Implementation
 
   @doc """
