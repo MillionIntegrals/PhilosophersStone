@@ -1,5 +1,9 @@
 # Stone
 
+[![Build Status](https://travis-ci.org/MillionIntegrals/stone.svg?branch=master)](https://travis-ci.org/MillionIntegrals/stone)
+[![Build Status](https://img.shields.io/hexpm/v/stone.svg)](https://img.shields.io/hexpm/v/stone.svg)
+
+
 I have started this project while learning elixir macros by
 trying to replicate functionality from
 [sasa1977/exactor](https://github.com/sasa1977/exactor).
