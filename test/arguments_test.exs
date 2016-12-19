@@ -1,4 +1,4 @@
-defmodule PhilosophersStone.ArgumentsTest do
+defmodule Stone.ArgumentsTest do
   use ExUnit.Case, async: true
-  doctest PhilosophersStone.Arguments
+  doctest Stone.Arguments
 end

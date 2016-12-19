@@ -1,4 +1,4 @@
-defmodule PhilosophersStone.Development do
+defmodule Stone.Development do
   @moduledoc false
 
   @doc "Print given code before and after macro expansion"

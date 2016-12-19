@@ -1,4 +1,4 @@
-defmodule PhilosophersStone do
+defmodule Stone do
   @moduledoc ~S"""
   This project tries to reduce boilerplate when writing Elixir `GenServer`s by making use of
   language metaprogramming capabilities.
@@ -11,8 +11,8 @@ defmodule PhilosophersStone do
   * `start` function just packs all arguments into a tuple which it forwards to `init/1` via `GenServer.start`
   * Calls and casts interface functions just forward all arguments to the server process via `GenServer.call` and `GenServer.cast`.
 
-  For other cases, you may need to use plain `GenServer` functions (which can be used together with `PhilosophersStone` macros).
-  `PhilosophersStone` is not meant to fully replace `GenServer`. It just tries to reduce boilerplate in most common cases.
+  For other cases, you may need to use plain `GenServer` functions (which can be used together with `Stone` macros).
+  `Stone` is not meant to fully replace `GenServer`. It just tries to reduce boilerplate in most common cases.
 
   ## Usage Examples
 
@@ -20,7 +20,7 @@ defmodule PhilosophersStone do
 
   ```elixir
   defmodule CounterAgent do
-    use PhilosophersStone.GenServer
+    use Stone.GenServer
 
     defstart start_link(val \\ 0) do
       initial_state(val)
@@ -89,8 +89,8 @@ defmodule PhilosophersStone do
   ## Documentation
 
   For more detailed documentation, please look at these modules:
-  * `PhilosophersStone.GenServer`
-  * `PhilosophersStone.Operations`
-  * `PhilosophersStone.Responders`
+  * `Stone.GenServer`
+  * `Stone.Operations`
+  * `Stone.Responders`
   """
 end

@@ -1,8 +1,8 @@
-defmodule SimpleGenServerTest do
+defmodule Stone.SimpleGenServerTest do
   use ExUnit.Case
 
   defmodule CounterAgent do
-    use PhilosophersStone.GenServer
+    use Stone.GenServer
 
     defstart start_link(val \\ 0) do
       initial_state(val)

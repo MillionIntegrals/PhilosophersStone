@@ -1,4 +1,4 @@
-defmodule PhilosophersStone.MacroHelpers do
+defmodule Stone.MacroHelpers do
   @moduledoc false
 
   @doc """
@@ -27,6 +27,6 @@ defmodule PhilosophersStone.MacroHelpers do
   end
 
   def state_var do
-    Macro.var(:state_var, PhilosophersStone)
+    Macro.var(:state_var, Stone)
   end
 end

@@ -1,4 +1,4 @@
-# PhilosophersStone
+# Stone
 
 I have started this project while learning elixir macros by
 trying to replicate functionality from
@@ -37,8 +37,8 @@ This project helps remove boilerplate common when implementing `GenServer` behav
 * `start` function just packs all arguments into a tuple which it forwards to `init/1` via `GenServer.start`
 * Calls and casts interface functions just forward all arguments to the server process via `GenServer.call` and `GenServer.cast`.
 
-For other cases, you may need to use plain `GenServer` functions (which can be used together with `PhilosophersStone` macros).
-`PhilosophersStone` is not meant to fully replace `GenServer`. It just tries to reduce boilerplate in most common cases.
+For other cases, you may need to use plain `GenServer` functions (which can be used together with `Stone` macros).
+`Stone` is not meant to fully replace `GenServer`. It just tries to reduce boilerplate in most common cases.
 
 ## Usage Examples
 
@@ -46,7 +46,7 @@ Let's take a look at the following server definition:
 
 ```elixir
 defmodule CounterAgent do
-  use PhilosophersStone.GenServer
+  use Stone.GenServer
 
   defstart start_link(val \\ 0) do
     initial_state(val)

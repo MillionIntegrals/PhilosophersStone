@@ -1,10 +1,10 @@
-defmodule PhilosophersStone.Operations do
+defmodule Stone.Operations do
   @moduledoc """
   Basic building blocks for your `GenServer`s.
   Use these macros to define your desired functionality.
   """
 
-  import PhilosophersStone.Operations.Implementation
+  import Stone.Operations.Implementation
 
   @doc """
   Define server starting function(`start`, `start_link`) together with corresponding `init/1`.

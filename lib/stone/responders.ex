@@ -1,4 +1,4 @@
-defmodule PhilosophersStone.Responders do
+defmodule Stone.Responders do
   @moduledoc """
   Various macros useful for returning simpler responses from
   init/call/cast/info handlers.
@@ -9,7 +9,7 @@ defmodule PhilosophersStone.Responders do
   Should be used in `definit`/`defstart`.
 
   ## Examples
-      iex> PhilosophersStone.Responders.initial_state(1)
+      iex> Stone.Responders.initial_state(1)
       {:ok, 1}
   """
   defmacro initial_state(state) do
@@ -33,7 +33,7 @@ defmodule PhilosophersStone.Responders do
 
   defmacro reply(response) do
     quote do
-      {:reply, unquote(response), unquote(PhilosophersStone.MacroHelpers.state_var)}
+      {:reply, unquote(response), unquote(Stone.MacroHelpers.state_var)}
     end
   end
 
@@ -45,7 +45,7 @@ defmodule PhilosophersStone.Responders do
 
   defmacro noreply() do
     quote do
-      {:noreply, unquote(PhilosophersStone.MacroHelpers.state_var)}
+      {:noreply, unquote(Stone.MacroHelpers.state_var)}
     end
   end
 

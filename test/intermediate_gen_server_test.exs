@@ -1,8 +1,8 @@
-defmodule IntermediateGenServerTest do
+defmodule Stone.IntermediateGenServerTest do
   use ExUnit.Case
 
   defmodule TestServer1 do
-    use PhilosophersStone.GenServer
+    use Stone.GenServer
 
     defstart start_link(val \\ 0) do
       initial_state(val)
