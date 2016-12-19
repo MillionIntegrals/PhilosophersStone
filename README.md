@@ -20,19 +20,19 @@ Online documentation can be found [here](https://hexdocs.pm/stone/).
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
-  1. Add `philosophers_stone` to your list of dependencies in `mix.exs`:
+  1. Add `stone` to your list of dependencies in `mix.exs`:
 
     ```elixir
     def deps do
-      [{:philosophers_stone, "~> 0.1.0"}]
+      [{:stone, "~> 0.1.0"}]
     end
     ```
 
-  2. Ensure `philosophers_stone` is started before your application:
+  2. Ensure `stone` is started before your application:
 
     ```elixir
     def application do
-      [applications: [:philosophers_stone]]
+      [applications: [:stone]]
     end
     ```
 

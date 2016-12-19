@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-#     config :philosophers_stone, key: :value
+#     config :stone, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:philosophers_stone, :key)
+#     Application.get_env(:stone, :key)
 #
 # Or configure a 3rd-party app:
 #
