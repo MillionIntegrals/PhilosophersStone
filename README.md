@@ -1,7 +1,7 @@
 # Stone
 
 [![Build Status](https://travis-ci.org/MillionIntegrals/stone.svg?branch=master)](https://travis-ci.org/MillionIntegrals/stone)
-[![Build Status](https://img.shields.io/hexpm/v/stone.svg)](https://img.shields.io/hexpm/v/stone.svg)
+[![Build Status](https://img.shields.io/hexpm/v/stone.svg)](https://hex.pm/packages/stone)
 
 
 I have started this project while learning elixir macros by
@@ -13,6 +13,8 @@ while at the same time trying to maintain code simpliciy and clarity.
 
 This project tries to reduce boilerplate when writing Elixir `GenServer`s by making use of
 language metaprogramming capabilities.
+
+Online documentation can be found [here](https://hexdocs.pm/stone/).
 
 ## Installation
 
