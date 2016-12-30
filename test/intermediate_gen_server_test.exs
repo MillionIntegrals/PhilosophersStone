@@ -1,5 +1,5 @@
 defmodule Stone.IntermediateGenServerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   defmodule TestServer1 do
     use Stone.GenServer

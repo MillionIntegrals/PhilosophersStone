@@ -19,6 +19,20 @@ defmodule Stone.Responders do
   end
 
   @doc """
+  Return this, when you don't care about the initial state of the actor.
+  Should be used in `definit`/`defstart`.
+
+  ## Examples
+      iex> Stone.Responders.no_initial_state()
+      {:ok, nil}
+  """
+  defmacro no_initial_state() do
+    quote do
+      {:ok, nil}
+    end
+  end
+
+  @doc """
   Set initial state of the actor and timeout for initialization.
   Should be used in `definit`/`defstart`.
   Allows for setting a timeout.

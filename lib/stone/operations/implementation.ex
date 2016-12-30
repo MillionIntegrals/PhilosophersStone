@@ -3,52 +3,80 @@ defmodule Stone.Operations.Implementation do
 
   alias Stone.MacroHelpers
   alias Stone.Arguments
+  alias Stone.Declaration
 
-  def define_starter(definition, options \\ []) do
-    {name, args} = Macro.decompose_call(definition)
-    payload = args |> Arguments.clear_default_arguments |> Arguments.pack_values_as_tuple
-
-    function_head_clause = {:defstart, name, length(args)}
-    gen_server_fun = determine_gen_server_starter_fun(name, options)
-
-    init_ast = if options[:do] do
-      define_init(payload, options[:do])
-    end
+  def guard_function_registration(type, name, args, [do: body]) do
+    function_head_clause = {type, name, length(args)}
 
     quote do
-      if not (unquote(Macro.escape(function_head_clause)) in @ps_function_heads) do
-        def unquote(name)(unquote_splicing(args)) do
-          GenServer.unquote(gen_server_fun)(__MODULE__, unquote(payload))
-        end
-        @ps_function_heads unquote(Macro.escape(function_head_clause))
-      end
+      if not (unquote(Macro.escape(function_head_clause)) in @stone_function_heads) do
+        @stone_function_heads unquote(Macro.escape(function_head_clause))
 
-      unquote(init_ast)
+        def unquote(name)(unquote_splicing(args)) do
+          unquote(body)
+        end
+      end
     end
+  end
+
+  def define_starter(%Declaration{name: name, args: args}, options \\ []) do
+    payload = args |> Arguments.clear_default_arguments |> Arguments.pack_values_as_tuple
+    gen_server_fun = determine_gen_server_starter_fun(name, options)
+
+    singleton_options = if options[:singleton] do
+      [name: options[:singleton]]
+    else
+      []
+    end
+
+    head_ast = guard_function_registration(:defstart, name, args) do
+      quote do
+        GenServer.unquote(gen_server_fun)(__MODULE__, unquote(payload), unquote(singleton_options))
+      end
+    end
+
+    init_ast = if options[:do] do
+      define_init(payload, [do: options[:do]])
+    end
+
+    MacroHelpers.block_helper([
+      head_ast,
+      init_ast
+    ])
   end
 
   # Private function that actually defines init
-  def define_init(arg, body) do
-    quote do
-      def init(unquote(arg)), do: unquote(body)
+  def define_init(arg, options \\ []) do
+    if options[:do] do
+      quote do
+        def init(unquote(arg)), do: unquote(options[:do])
+      end
+    else
+      quote do
+        def init(unquote(arg))
+      end
     end
   end
 
-  def define_handler(type, definition, options \\ []) do
-    {name, args} = Macro.decompose_call(definition)
+  def define_handler(type, %Declaration{name: name, args: args}, module, options \\ []) do
     payload = [name | args] |> Arguments.clear_default_arguments |> Arguments.pack_values_as_tuple
 
     {handler_name, handler_args} = handler_sig(type, options, payload)
     server_fun_name = server_fun_atom(type)
 
-    function_head_clause = {type, name, length(args)}
+    pid_variable = Macro.var(:pid, module)
 
-    generic_function_ast = quote do
-      if not (unquote(Macro.escape(function_head_clause)) in @ps_function_heads) do
-        def unquote(name)(pid, unquote_splicing(args)) do
-          GenServer.unquote(server_fun_name)(pid, unquote(payload))
+    generic_function_ast = if options[:singleton] do
+      guard_function_registration(type, name, args) do
+        quote do
+          GenServer.unquote(server_fun_name)(unquote(options[:singleton]), unquote(payload))
         end
-        @ps_function_heads unquote(Macro.escape(function_head_clause))
+      end
+    else
+      guard_function_registration(type, name, [pid_variable | args]) do
+        quote do
+          GenServer.unquote(server_fun_name)(unquote(pid_variable), unquote(payload))
+        end
       end
     end
 
@@ -84,8 +112,6 @@ defmodule Stone.Operations.Implementation do
     state_arg = get_state_identifier(Keyword.fetch(options, :state))
     {:handle_info, [msg, state_arg]}
   end
-
-
 
   # Determine whether GenServer starter fun called should be `start` or `start_link`
   defp determine_gen_server_starter_fun(name, options) do

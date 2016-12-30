@@ -26,6 +26,19 @@ defmodule Stone.MacroHelpers do
     {:__block__, [], list}
   end
 
+  def inject_to_module(quoted, module, env) do
+    Module.eval_quoted(
+      module, quoted,
+      [],
+      aliases: env.aliases,
+      requires: env.requires,
+      functions: env.functions,
+      macros: env.macros,
+      file: env.file,
+      line: env.line
+    )
+  end
+
   def state_var do
     Macro.var(:state_var, Stone)
   end
