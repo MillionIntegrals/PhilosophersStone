@@ -24,7 +24,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
     ```elixir
     def deps do
-      [{:stone, "~> 0.1.0"}]
+      [{:stone, "~> 0.2.0"}]
     end
     ```
 
