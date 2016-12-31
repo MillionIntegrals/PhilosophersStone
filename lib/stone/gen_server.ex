@@ -1,5 +1,5 @@
 defmodule Stone.GenServer do
-  @moduledoc """
+  @moduledoc ~S"""
   This is the module to `use` in your code if you want to start using functionality that allows you to
   code GenServers quicker.
 
@@ -14,6 +14,11 @@ defmodule Stone.GenServer do
     end
   end
   ```
+
+  ## Options
+
+  * `:singleton` - set it to an atom you want to register your server under using `:name`.
+  It changes definition of interface functions, so that they do not accept `pid` argument anymore.
 
   For more information about what you can define inside the module, please check
   `Stone.Operations` and `Stone.Responders`.

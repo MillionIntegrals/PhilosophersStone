@@ -9,7 +9,8 @@ defmodule Stone do
   This project helps remove boilerplate common when implementing `GenServer` behaviour in Elixir. In particular, it can be useful in following situations:
 
   * `start` function just packs all arguments into a tuple which it forwards to `init/1` via `GenServer.start`
-  * Calls and casts interface functions just forward all arguments to the server process via `GenServer.call` and `GenServer.cast`.
+  * Calls and casts interface functions just forward all arguments to the server process via `GenServer.call` and `GenServer.cast`
+  * Registration of GenServer under a global name
 
   For other cases, you may need to use plain `GenServer` functions (which can be used together with `Stone` macros).
   `Stone` is not meant to fully replace `GenServer`. It just tries to reduce boilerplate in most common cases.

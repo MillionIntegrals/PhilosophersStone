@@ -5,12 +5,17 @@ defmodule Stone.Operations.Implementation do
   alias Stone.Arguments
   alias Stone.Declaration
 
-  def guard_function_registration(type, name, args, [do: body]) do
+  # Guard Function Registration:
+  # Make sure that function with given type(a symbol) name and arity
+  # Is being defined only once
+  #
+  # This is guarded by using @stone_function_heads module attribute
+  defp guard_function_registration(type, name, args, [do: body]) do
     function_head_clause = {type, name, length(args)}
 
-    quote do
-      if not (unquote(Macro.escape(function_head_clause)) in @stone_function_heads) do
-        @stone_function_heads unquote(Macro.escape(function_head_clause))
+    quote [bind_quoted: [function_head_clause: Macro.escape(function_head_clause)], unquote: true] do
+      if not (function_head_clause in @stone_function_heads) do
+        @stone_function_heads function_head_clause
 
         def unquote(name)(unquote_splicing(args)) do
           unquote(body)
@@ -19,6 +24,7 @@ defmodule Stone.Operations.Implementation do
     end
   end
 
+  # Define both spawning function and init/1 handler
   def define_starter(%Declaration{name: name, args: args}, options \\ []) do
     payload = args |> Arguments.clear_default_arguments |> Arguments.pack_values_as_tuple
     gen_server_fun = determine_gen_server_starter_fun(name, options)
@@ -29,23 +35,23 @@ defmodule Stone.Operations.Implementation do
       []
     end
 
-    head_ast = guard_function_registration(:defstart, name, args) do
+    generic_ast = guard_function_registration(:defstart, name, args) do
       quote do
         GenServer.unquote(gen_server_fun)(__MODULE__, unquote(payload), unquote(singleton_options))
       end
     end
 
-    init_ast = if options[:do] do
+    handler_ast = if options[:do] do
       define_init(payload, [do: options[:do]])
     end
 
     MacroHelpers.block_helper([
-      head_ast,
-      init_ast
+      generic_ast,
+      handler_ast
     ])
   end
 
-  # Private function that actually defines init
+  # Function that actually defines init/1 handler
   def define_init(arg, options \\ []) do
     if options[:do] do
       quote do
@@ -59,12 +65,11 @@ defmodule Stone.Operations.Implementation do
   end
 
   def define_handler(type, %Declaration{name: name, args: args}, module, options \\ []) do
+    server_fun_name = server_fun_atom(type)
+    pid_variable = Macro.var(:pid, module)
     payload = [name | args] |> Arguments.clear_default_arguments |> Arguments.pack_values_as_tuple
 
     {handler_name, handler_args} = handler_sig(type, options, payload)
-    server_fun_name = server_fun_atom(type)
-
-    pid_variable = Macro.var(:pid, module)
 
     generic_function_ast = if options[:singleton] do
       guard_function_registration(type, name, args) do
@@ -80,7 +85,7 @@ defmodule Stone.Operations.Implementation do
       end
     end
 
-    specific_function_ast = if options[:do] do
+    handler_function_ast = if options[:do] do
       quote do
         def unquote(handler_name)(unquote_splicing(handler_args)) do
           unquote(options[:do])
@@ -90,7 +95,7 @@ defmodule Stone.Operations.Implementation do
 
     MacroHelpers.block_helper([
       generic_function_ast,
-      specific_function_ast
+      handler_function_ast
     ])
   end
 
@@ -126,55 +131,4 @@ defmodule Stone.Operations.Implementation do
         end
     end
   end
-
-  # @doc false
-  # def extract_args(args) do
-  #   arg_names = for {arg, index} <- Enum.with_index(args), do: extract_arg(arg, index)
-
-  #   interface_matches = for {arg, arg_name} <- Enum.zip(args, arg_names) do
-  #     case arg do
-  #       {:\\, context, [match, default]} -> {:\\, context, [quote(do: unquote(match) = unquote(arg_name)), default]}
-  #       match -> quote(do: unquote(match) = unquote(arg_name))
-  #     end
-  #   end
-
-  #   args = for arg <- args do
-  #     case arg do
-  #       {:\\, _, [match, _]} -> match
-  #       _ -> arg
-  #     end
-  #   end
-  #   {arg_names, interface_matches, args}
-  # end
-
-  # defmacrop var_name?(arg_name) do
-  #   quote do
-  #     is_atom(unquote(arg_name)) and not (unquote(arg_name) in [:_, :\\, :=, :%, :%{}, :{}, :<<>>])
-  #   end
-  # end
-
-  # # Extract arguments
-  # defp extract_arg({:\\, _, [inner_arg, _]}, index), do: extract_arg(inner_arg, index)
-  # defp extract_arg({:=, _, [{arg_name, _, _} = arg, _]}, _index) when var_name?(arg_name), do: arg
-  # defp extract_arg({:=, _, [_, {arg_name, _, _} = arg]}, _index) when var_name?(arg_name), do: arg
-  # defp extract_arg({:=, _, [_, {:=, _, _} = submatch]}, index), do: extract_arg(submatch, index)
-  # defp extract_arg({arg_name, _, _} = arg, _index) when var_name?(arg_name), do: arg
-  # defp extract_arg(_, index), do: Macro.var(:"arg#{index}", __MODULE__)
-
-  # @doc false
-  # def start_args(args) do
-  #   {arg_names, interface_matches, args} = extract_args(args)
-
-  #   {payload, match_pattern} =
-  #     case args do
-  #       [] -> {nil, nil}
-  #       [_|_] ->
-  #         {
-  #           quote(do: {unquote_splicing(arg_names)}),
-  #           quote(do: {unquote_splicing(args)})
-  #         }
-  #     end
-
-  #   {interface_matches, payload, match_pattern}
-  # end
 end
