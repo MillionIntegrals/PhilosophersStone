@@ -26,6 +26,9 @@ defmodule Stone.MacroHelpers do
     {:__block__, [], list}
   end
 
+  @doc """
+  Evaluate supplied code in the context of given module.
+  """
   def inject_to_module(quoted, module, env) do
     Module.eval_quoted(
       module, quoted,
@@ -37,9 +40,5 @@ defmodule Stone.MacroHelpers do
       file: env.file,
       line: env.line
     )
-  end
-
-  def state_var do
-    Macro.var(:state_var, Stone)
   end
 end

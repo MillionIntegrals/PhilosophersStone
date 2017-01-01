@@ -102,7 +102,7 @@ defmodule Stone.Operations.Implementation do
   defp server_fun_atom(:defcall), do: :call
   defp server_fun_atom(:defcast), do: :cast
 
-  defp get_state_identifier({:ok, match}), do: quote(do: unquote(match) = unquote(Stone.MacroHelpers.state_var))
+  defp get_state_identifier({:ok, match}), do: quote(do: unquote(match) = unquote(Stone.GenServer.state_var))
   defp get_state_identifier(:error), do: get_state_identifier({:ok, quote(do: _)})
 
   defp handler_sig(:defcall, options, msg) do

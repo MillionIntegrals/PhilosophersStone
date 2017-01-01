@@ -39,4 +39,10 @@ defmodule Stone.GenServer do
       ]
     end
   end
+
+  # A special variable that is used to supply state in 'smart responders'
+  @doc false
+  def state_var do
+    Macro.var(:state_var, Stone.GenServer)
+  end
 end

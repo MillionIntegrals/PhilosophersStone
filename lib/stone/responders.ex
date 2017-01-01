@@ -37,7 +37,9 @@ defmodule Stone.Responders do
   Should be used in `definit`/`defstart`.
   Allows for setting a timeout.
 
-  ## Example
+  ## Examples
+      iex> Stone.Responders.initial_state(:state, 1000)
+      {:ok, :state, 1000}
   """
   defmacro initial_state(state, timeout) do
     quote do
@@ -45,24 +47,45 @@ defmodule Stone.Responders do
     end
   end
 
+  @doc """
+  Send a reply from the generic server request handler without changing the
+  state.
+  """
   defmacro reply(response) do
     quote do
-      {:reply, unquote(response), unquote(Stone.MacroHelpers.state_var)}
+      {:reply, unquote(response), unquote(Stone.GenServer.state_var)}
     end
   end
 
+  @doc """
+  Send a reply from generic server request handler and change the state.
+
+  ## Examples
+      iex> Stone.Responders.reply_and_set(:ok, :state)
+      {:reply, :ok, :state}
+  """
   defmacro reply_and_set(response, new_state) do
     quote do
       {:reply, unquote(response), unquote(new_state)}
     end
   end
 
+  @doc """
+  Don't send a reply from the generic server request handler and don't change a state.
+  """
   defmacro noreply() do
     quote do
-      {:noreply, unquote(Stone.MacroHelpers.state_var)}
+      {:noreply, unquote(Stone.GenServer.state_var)}
     end
   end
 
+  @doc """
+  Don't send a reply from generic server request handler and set a new state.
+
+  ## Examples
+      iex> Stone.Responders.noreply_and_set(:state)
+      {:noreply, :state}
+  """
   defmacro noreply_and_set(new_state) do
     quote do
       {:noreply, unquote(new_state)}

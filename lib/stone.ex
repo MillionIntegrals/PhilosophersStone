@@ -1,19 +1,22 @@
 defmodule Stone do
   @moduledoc ~S"""
-  This project tries to reduce boilerplate when writing Elixir `GenServer`s by making use of
-  language metaprogramming capabilities.
-
+  This project tries to reduce boilerplate when writing Elixir `GenServer`s by
+  making use of language metaprogramming capabilities.
 
   ## Functionality
 
-  This project helps remove boilerplate common when implementing `GenServer` behaviour in Elixir. In particular, it can be useful in following situations:
+  This project helps remove boilerplate common when implementing `GenServer`
+  behaviour in Elixir. In particular, it can be useful in following situations:
 
-  * `start` function just packs all arguments into a tuple which it forwards to `init/1` via `GenServer.start`
-  * Calls and casts interface functions just forward all arguments to the server process via `GenServer.call` and `GenServer.cast`
+  * `start` function just packs all arguments into a tuple which it forwards to
+    `init/1` via `GenServer.start`
+  * Calls and casts interface functions just forward all arguments to the server
+    process via `GenServer.call` and `GenServer.cast`
   * Registration of GenServer under a global name
 
-  For other cases, you may need to use plain `GenServer` functions (which can be used together with `Stone` macros).
-  `Stone` is not meant to fully replace `GenServer`. It just tries to reduce boilerplate in most common cases.
+  For other cases, you may need to use plain `GenServer` functions (which can be
+  used together with `Stone` macros). `Stone` is not meant to fully replace
+  `GenServer`. It just tries to reduce boilerplate in most common cases.
 
   ## Usage Examples
 
@@ -45,9 +48,9 @@ defmodule Stone do
   end
   ```
 
-  Above code defines a simple `GenServer` that maintains a counter, and exposes a convenient
-  interface to be used by other processes. Without using a library, this code would look like
-  that:
+  Above code defines a simple `GenServer` that maintains a counter, and exposes
+  a convenient interface to be used by other processes. Without using a library,
+  this code would look like that:
 
   ```elixir
   defmodule CounterAgent do
