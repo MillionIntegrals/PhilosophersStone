@@ -27,7 +27,7 @@ defmodule Stone.Operations do
   defmacro definit(arg \\ quote(do: _), options \\ []) do
     quote bind_quoted: [
       arg: Macro.escape(arg),
-      options: Macro.escape(options)
+      options: Macro.escape(options, unquote: true)
     ] do
       Stone.Operations.Implementation.define_init(arg, options ++ @stone_settings)
       |> Stone.MacroHelpers.inject_to_module(__MODULE__, __ENV__)
@@ -45,7 +45,9 @@ defmodule Stone.Operations do
       options: Macro.escape(options, unquote: true),
       body: Macro.escape(body, unquote: true)
     ] do
-      Stone.Operations.Implementation.define_handler(:defcall, declaration, __MODULE__, options ++ body ++ @stone_settings)
+      Stone.Operations.Implementation.define_handler(
+        :defcall, declaration, __MODULE__, options ++ body ++ @stone_settings
+      )
       |> Stone.MacroHelpers.inject_to_module(__MODULE__, __ENV__)
     end
   end
@@ -61,7 +63,9 @@ defmodule Stone.Operations do
       options: Macro.escape(options, unquote: true),
       body: Macro.escape(body, unquote: true)
     ] do
-      Stone.Operations.Implementation.define_handler(:defcast, declaration, __MODULE__, options ++ body ++ @stone_settings)
+      Stone.Operations.Implementation.define_handler(
+        :defcast, declaration, __MODULE__, options ++ body ++ @stone_settings
+      )
       |> Stone.MacroHelpers.inject_to_module(__MODULE__, __ENV__)
     end
   end

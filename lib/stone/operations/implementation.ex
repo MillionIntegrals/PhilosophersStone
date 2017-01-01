@@ -2,7 +2,6 @@ defmodule Stone.Operations.Implementation do
   @moduledoc false
 
   alias Stone.MacroHelpers
-  alias Stone.Arguments
   alias Stone.Declaration
 
   # Guard Function Registration:
@@ -26,7 +25,7 @@ defmodule Stone.Operations.Implementation do
 
   # Define both spawning function and init/1 handler
   def define_starter(%Declaration{name: name, args: args}, options \\ []) do
-    payload = args |> Arguments.clear_default_arguments |> Arguments.pack_values_as_tuple
+    payload = args |> Declaration.clear_default_arguments |> Declaration.pack_as_tuple
     gen_server_fun = determine_gen_server_starter_fun(name, options)
 
     singleton_options = if options[:singleton] do
@@ -67,7 +66,7 @@ defmodule Stone.Operations.Implementation do
   def define_handler(type, %Declaration{name: name, args: args}, module, options \\ []) do
     server_fun_name = server_fun_atom(type)
     pid_variable = Macro.var(:pid, module)
-    payload = [name | args] |> Arguments.clear_default_arguments |> Arguments.pack_values_as_tuple
+    payload = [name | args] |> Declaration.clear_default_arguments |> Declaration.pack_as_tuple
 
     {handler_name, handler_args} = handler_sig(type, options, payload)
 
