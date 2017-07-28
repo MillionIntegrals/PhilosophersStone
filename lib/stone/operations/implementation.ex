@@ -12,7 +12,11 @@ defmodule Stone.Operations.Implementation do
   defp guard_function_registration(type, name, args, [do: body]) do
     function_head_clause = {type, name, length(args)}
 
-    quote [bind_quoted: [function_head_clause: Macro.escape(function_head_clause)], unquote: true] do
+    quote [
+      bind_quoted: [
+        function_head_clause: Macro.escape(function_head_clause)
+      ], unquote: true
+    ] do
       if not (function_head_clause in @stone_function_heads) do
         @stone_function_heads function_head_clause
 
@@ -98,9 +102,11 @@ defmodule Stone.Operations.Implementation do
     ])
   end
 
+  # Determine gen server generic function name
   defp server_fun_atom(:defcall), do: :call
   defp server_fun_atom(:defcast), do: :cast
 
+  # Ger the ast for state variable definition in the call.
   defp get_state_identifier({:ok, match}), do: quote(do: unquote(match) = unquote(Stone.GenServer.state_var))
   defp get_state_identifier(:error), do: get_state_identifier({:ok, quote(do: _)})
 
